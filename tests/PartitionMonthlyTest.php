@@ -4,7 +4,7 @@ require_once __DIR__ . '/AbstractPartitionTest.php';
 use Jinraynor1\PartitionRotator\PartitionRotator;
 use Jinraynor1\PartitionRotator\RotateModeMonthly;
 
-class PartitionDailyTest extends AbstractPartitionTest
+class PartitionMonthlyTest extends AbstractPartitionTest
 {
 
     public function setUp()
