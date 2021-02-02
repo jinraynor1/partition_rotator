@@ -15,7 +15,7 @@ class RotateModeDaily implements RotateModeInterface
     function getPartitionValue(\DateTime $dateTime)
     {
         $_dateTime = clone($dateTime);
-        $_dateTime->modify('-1 day');
+        $_dateTime->modify('+1 day');
 
         return DateHelper::to_days($_dateTime->getTimestamp());
     }

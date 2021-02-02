@@ -12,7 +12,7 @@ class PartitionDailyTest extends AbstractPartitionTest
         parent::setUp();
 
         $this->partition = new PartitionRotator(self::$pdo, $GLOBALS["DB_NAME"] , "test_rotate_daily",
-            new DateTime("2020-10-01"), new DateTime("2020-10-07"), new RotateModeDaily() );
+            new DateTime("2020-10-03"), new DateTime("2020-10-07"), new RotateModeDaily() );
 
         $this->initTable();
     }
@@ -26,15 +26,15 @@ class PartitionDailyTest extends AbstractPartitionTest
   `dt` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1
  PARTITION BY RANGE (TO_DAYS(dt))
-(PARTITION `start` VALUES LESS THAN (0) ENGINE = MyISAM,
- PARTITION from20201001 VALUES LESS THAN (738063) ENGINE = MyISAM,
- PARTITION from20201002 VALUES LESS THAN (738064) ENGINE = MyISAM,
- PARTITION from20201003 VALUES LESS THAN (738065) ENGINE = MyISAM,
- PARTITION from20201004 VALUES LESS THAN (738066) ENGINE = MyISAM,
- PARTITION from20201005 VALUES LESS THAN (738067) ENGINE = MyISAM,
- PARTITION from20201006 VALUES LESS THAN (738068) ENGINE = MyISAM,
- PARTITION future VALUES LESS THAN MAXVALUE ENGINE = MyISAM) 
-        ");
+(PARTITION `start` VALUES LESS THAN (0) ,
+PARTITION from20201001 VALUES LESS THAN (TO_DAYS('2020-10-02')) ,
+PARTITION from20201002 VALUES LESS THAN (TO_DAYS('2020-10-03')) ,
+PARTITION from20201003 VALUES LESS THAN (TO_DAYS('2020-10-04')) ,
+PARTITION from20201004 VALUES LESS THAN (TO_DAYS('2020-10-05')) ,
+PARTITION from20201005 VALUES LESS THAN (TO_DAYS('2020-10-06')) ,
+PARTITION from20201006 VALUES LESS THAN (TO_DAYS('2020-10-07')) ,
+PARTITION future VALUES LESS THAN MAXVALUE ) 
+");
 
 
     }
@@ -44,8 +44,8 @@ class PartitionDailyTest extends AbstractPartitionTest
     {
         $partitions = $this->partition->getPartitions();
         $this->assertNotEmpty($partitions);
-        $this->assertEquals("2020-09-30",$partitions[0]->getDate()->format("Y-m-d"));
-        $this->assertEquals("2020-10-05",$partitions[count($partitions)-1]->getDate()->format("Y-m-d"));
+        $this->assertEquals("2020-10-02",$partitions[0]->getDate()->format("Y-m-d"));
+        $this->assertEquals("2020-10-07",$partitions[count($partitions)-1]->getDate()->format("Y-m-d"));
     }
 
     public function testRemovePartition()

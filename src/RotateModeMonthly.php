@@ -15,8 +15,7 @@ class RotateModeMonthly implements RotateModeInterface
     function getPartitionValue(\DateTime $dateTime)
     {
         $_dateTime = clone($dateTime);
-        $_dateTime->modify('first day of this month');
-        $_dateTime->modify('-1 day');
+        $_dateTime->modify('first day of next month');
 
         return DateHelper::to_days($_dateTime->getTimestamp());
     }

@@ -49,8 +49,8 @@ class PartitionRotator
             return true;
 
             foreach ($partition_list as $partition) {
+                
                 if($partition->getDate() < $this->old_partition_time ){
-
                 $sql = sprintf("ALTER TABLE `%s`.`%s` DROP  PARTITION %s",
                     $this->database_name,$this->table_name,
                     $partition->getName());

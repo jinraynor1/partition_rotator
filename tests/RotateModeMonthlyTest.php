@@ -19,7 +19,7 @@ class RotateModeMonthlyTest extends TestCase
 
     public function testGetPartitionValue()
     {
-        $this->assertEquals(738186, $this->rotateMode->getPartitionValue(new DateTime("2021-02-02")));
-        $this->assertEquals(738155,$this->rotateMode->getPartitionValue(new DateTime("2021-01-30")));
+        $this->assertEquals(738215, $this->rotateMode->getPartitionValue(new DateTime("2021-02-02")));
+        $this->assertEquals(738187,$this->rotateMode->getPartitionValue(new DateTime("2021-01-30")));
     }
 }
