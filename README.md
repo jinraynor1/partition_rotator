@@ -3,6 +3,43 @@ rotate table partition for MySQL
 ## Getting Started
 
 
+### Hourly rotate mode
+First you must create the table
+
+```sql
+CREATE TABLE `test_rotate_hourly` (
+  `dt` datetime NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1
+ PARTITION BY RANGE (TO_SECONDS(dt))
+(PARTITION `start` VALUES LESS THAN (0) ,
+PARTITION from2020100322 VALUES LESS THAN (TO_SECONDS('2020-10-03 23:00:00')) ,
+PARTITION from2020100323 VALUES LESS THAN (TO_SECONDS('2020-10-04 00:00:00')) ,
+PARTITION from2020100400 VALUES LESS THAN (TO_SECONDS('2020-10-04 01:00:00')) ,
+PARTITION from2020100401 VALUES LESS THAN (TO_SECONDS('2020-10-04 02:00:00')) ,
+PARTITION from2020100402 VALUES LESS THAN (TO_SECONDS('2020-10-04 03:00:00')) ,
+PARTITION from2020100403 VALUES LESS THAN (TO_SECONDS('2020-10-04 04:00:00')) ,
+PARTITION future VALUES LESS THAN MAXVALUE )
+```
+Then you can start rotating the table
+```php
+<?php
+use Jinraynor1\PartitionRotator\RotateModeHourly;
+use Jinraynor1\PartitionRotator\PartitionRotator;
+
+$username = "root";
+$password = "";
+$db = new PDO("mysql:host=localhost;dbname=testdb",$username,$password);
+$database_name ="testdb";
+$table_name = "test_rotate_hourly";
+$oldest_partition = new DateTime(6 hour ago");
+$newest_partition = new DateTime("now");
+$rotate_mode = new RotateModeHourly();
+
+$partition = new PartitionRotator($db, $database_name, $table_name, $oldest_partition, $newest_partition, $rotate_mode);
+$partition->rotate();
+```
+
+
 ### Daily rotate mode
 First you must create the table
 

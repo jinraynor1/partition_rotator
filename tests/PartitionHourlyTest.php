@@ -28,12 +28,12 @@ class PartitionHourlyTest extends AbstractPartitionTest
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1
  PARTITION BY RANGE (TO_SECONDS(dt))
 (PARTITION `start` VALUES LESS THAN (0) ,
-PARTITION from2020100322 VALUES LESS THAN (TO_SECONDS('2020-10-03 22:00:00')) ,
-PARTITION from2020100323 VALUES LESS THAN (TO_SECONDS('2020-10-03 23:00:00')) ,
-PARTITION from2020100400 VALUES LESS THAN (TO_SECONDS('2020-10-04 00:00:00')) ,
-PARTITION from2020100401 VALUES LESS THAN (TO_SECONDS('2020-10-04 01:00:00')) ,
-PARTITION from2020100402 VALUES LESS THAN (TO_SECONDS('2020-10-04 02:00:00')) ,
-PARTITION from2020100403 VALUES LESS THAN (TO_SECONDS('2020-10-04 03:00:00')) ,
+PARTITION from2020100322 VALUES LESS THAN (TO_SECONDS('2020-10-03 23:00:00')) ,
+PARTITION from2020100323 VALUES LESS THAN (TO_SECONDS('2020-10-04 00:00:00')) ,
+PARTITION from2020100400 VALUES LESS THAN (TO_SECONDS('2020-10-04 01:00:00')) ,
+PARTITION from2020100401 VALUES LESS THAN (TO_SECONDS('2020-10-04 02:00:00')) ,
+PARTITION from2020100402 VALUES LESS THAN (TO_SECONDS('2020-10-04 03:00:00')) ,
+PARTITION from2020100403 VALUES LESS THAN (TO_SECONDS('2020-10-04 04:00:00')) ,
 PARTITION future VALUES LESS THAN MAXVALUE ) 
 ");
 
@@ -59,9 +59,9 @@ PARTITION future VALUES LESS THAN MAXVALUE )
 
     public function testAddPartition()
     {
-        $this->partition->addNewPartition(new DateTime("2020-10-04 04:00:00"));
+        $this->partition->addNewPartition(new DateTime("2020-10-04 05:00:00"));
         $partitions = $this->partition->getPartitions();
-        $this->assertEquals("from2020100404",$partitions[count($partitions)-1]->getName());
+        $this->assertEquals("from2020100405",$partitions[count($partitions)-1]->getName());
         $this->assertCount(7, $partitions);
     }
 
@@ -93,7 +93,7 @@ PARTITION future VALUES LESS THAN MAXVALUE )
             "EXPLAIN PARTITIONS SELECT * FROM test_rotate_hourly 
             WHERE dt BETWEEN '2020-10-03 23:00:00' AND '2020-10-04 01:00:00'")->fetchColumn(3);
 
-        $this->assertEquals("from2020100400,from2020100401,from2020100402",$data);
+        $this->assertEquals("from2020100323,from2020100400,from2020100401",$data);
 
     }
 }

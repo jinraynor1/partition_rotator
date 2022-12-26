@@ -14,6 +14,9 @@ class RotateModeHourly implements RotateModeInterface
 
     function getPartitionValue(\DateTime $dateTime)
     {
+        $dateTime->modify('+1 hour');
+
+
         if ($dateTime->format("H:i:s") == "00:00:00") {
             $from = new \DateTime("0000-01-00 00:00:00");
         } else {

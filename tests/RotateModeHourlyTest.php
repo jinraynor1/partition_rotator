@@ -19,9 +19,9 @@ class RotateModeHourlyTest extends TestCase
 
     public function testGetPartitionValue()
     {
-        $this->assertEquals(63779356800,$this->rotateMode->getPartitionValue(new DateTime("2021-02-01 00:00:00")));
-        $this->assertEquals(63779490000, $this->rotateMode->getPartitionValue(new DateTime("2021-02-02 13:00:00")));
-        $this->assertEquals(63781720203,$this->rotateMode->getPartitionValue(new DateTime("2021-02-28 08:30:03")));
-        $this->assertEquals(63779443199,$this->rotateMode->getPartitionValue(new DateTime("2021-02-01 23:59:59")));
+        $this->assertEquals(63779356800 + 3600,$this->rotateMode->getPartitionValue(new DateTime("2021-02-01 00:00:00")));
+        $this->assertEquals(63779490000 + 3600, $this->rotateMode->getPartitionValue(new DateTime("2021-02-02 13:00:00")));
+        $this->assertEquals(63781720203 + 3600,$this->rotateMode->getPartitionValue(new DateTime("2021-02-28 08:30:03")));
+        $this->assertEquals(63779443199 + 3600,$this->rotateMode->getPartitionValue(new DateTime("2021-02-01 23:59:59")));
     }
 }
