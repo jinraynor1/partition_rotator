@@ -79,4 +79,32 @@ class PartitionMonthlyTest extends AbstractPartitionTest
 
 
     }
+
+
+
+    public function testPartitionPrunning(){
+
+        self::$pdo->query("INSERT INTO test_rotate_monthly(dt) VALUES
+        
+        ('2020-10-09 21:29:00'),
+        ('2020-11-10 22:10:00'),
+        ('2020-12-11 23:30:00')
+             
+        
+        ");
+
+        $data = self::$pdo->query(
+            "EXPLAIN PARTITIONS SELECT * FROM test_rotate_monthly 
+            WHERE dt BETWEEN '2020-10-09 00:00:00' AND '2020-10-09 23:59:00'")->fetchColumn(3);
+
+        $this->assertEquals("from202010",$data);
+
+        $data = self::$pdo->query(
+            "EXPLAIN PARTITIONS SELECT * FROM test_rotate_monthly 
+            WHERE dt BETWEEN '2020-10-09 00:00:00' AND '2020-11-11 23:59:00'")->fetchColumn(3);
+
+        //todo: siempre agregar la particion de inicio cuando se busca mas de un mes aunque no tenga filas
+        $this->assertEquals("start,from202010,from202011",$data);
+
+    }
 }

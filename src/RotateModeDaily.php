@@ -19,4 +19,11 @@ class RotateModeDaily implements RotateModeInterface
 
         return DateHelper::to_days($_dateTime->getTimestamp());
     }
+
+    function getPartitionDate(Partition $partition)
+    {
+       return $partition->getDate();
+    }
+
+
 }

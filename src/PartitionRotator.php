@@ -68,7 +68,7 @@ class PartitionRotator implements LoggerAwareInterface
         }
         foreach ($partition_list as $partition) {
 
-            if ($partition->getDate() < $this->old_partition_time) {
+            if ($this->rotate_mode->getPartitionDate($partition) < $this->old_partition_time) {
                 $this->logger->info(sprintf("attempting to remove partition %s ", $partition->getName()));
 
                 $sql = sprintf("ALTER TABLE `%s`.`%s` DROP  PARTITION %s",

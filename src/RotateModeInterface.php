@@ -9,6 +9,6 @@ interface RotateModeInterface
 
     function getPartitionName(\DateTime $dateTime);
     function getPartitionValue(\DateTime $dateTime);
-
+    function getPartitionDate(Partition $partitionName);
 
 }

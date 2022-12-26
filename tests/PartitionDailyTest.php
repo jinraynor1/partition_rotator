@@ -72,4 +72,31 @@ PARTITION future VALUES LESS THAN MAXVALUE )
         $this->assertEquals("from20201007",$partitions[count($partitions)-1]->getName());
         $this->assertCount(6, $partitions);
     }
+
+    public function testPartitionPrunning(){
+
+        self::$pdo->query("INSERT INTO test_rotate_daily(dt) VALUES
+        ('2020-09-30 23:25:00'),
+        ('2020-10-01 21:29:00'),
+        ('2020-10-02 22:10:00'),
+        ('2020-10-03 23:30:00'),
+        ('2020-10-04 00:10:00'),
+        ('2020-10-05 01:48:00')
+        
+        ");
+
+        $data = self::$pdo->query(
+            "EXPLAIN PARTITIONS SELECT * FROM test_rotate_daily 
+            WHERE dt BETWEEN '2020-10-03 23:09:00' AND '2020-10-03 23:39:00'")->fetchColumn(3);
+
+        $this->assertEquals("from20201003",$data);
+
+        $data = self::$pdo->query(
+            "EXPLAIN PARTITIONS SELECT * FROM test_rotate_daily 
+            WHERE dt BETWEEN '2020-10-03 23:00:00' AND '2020-10-04 01:00:00'")->fetchColumn(3);
+
+        $this->assertEquals("from20201003,from20201004",$data);
+
+    }
+
 }
