@@ -96,4 +96,26 @@ PARTITION future VALUES LESS THAN MAXVALUE )
         $this->assertEquals("from2020100323,from2020100400,from2020100401",$data);
 
     }
+
+    public function testRangePartitions()
+    {
+
+        $partitions = $this->partition->getPartitions();
+        $oldPartitions = count($partitions);
+
+        $this->partition->addRangePartitions(
+            new DateTime("2020-10-04 04:00:00"),
+            new DateInterval("PT1H"),
+            new DateTime("2020-10-04 06:00:00")
+        );
+
+        $partitions = $this->partition->getPartitions();
+
+        $totalPartitions = $oldPartitions + 2;
+        $this->assertCount($totalPartitions ,$partitions);
+
+        $this->assertEquals("from2020100405",$partitions[$totalPartitions-1]->partition_name);
+        $this->assertEquals("from2020100404",$partitions[$totalPartitions-2]->partition_name);
+    }
+
 }

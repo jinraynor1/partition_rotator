@@ -104,7 +104,7 @@ class PartitionRotator implements LoggerAwareInterface
      * @param \DateTime $partition_time
      * @return Partition|bool
      */
-    private function partitionExists(\DateTime $partition_time)
+    public function partitionExists(\DateTime $partition_time)
     {
         $sql = sprintf("SELECT partition_name,partition_description FROM INFORMATION_SCHEMA.PARTITIONS 
                 WHERE table_schema='%s'
@@ -118,10 +118,26 @@ class PartitionRotator implements LoggerAwareInterface
 
     }
 
+    public function addRangePartitions($fromTime,$interval,$endTime)
+    {
+
+        $period = new \DatePeriod($fromTime, $interval, $endTime);
+
+        foreach ($period as $dateTime) {
+            $myDateTime = new \DateTime($dateTime->format("Y-m-d H:00:00"));
+            try {
+                if(!$this->partitionExists($myDateTime)){
+                    $this->addNewPartition($myDateTime);
+                }
+            } catch (\Exception $e) {
+                $this->logger->error(sprintf("Error adding partition %s, error: %s" ,$myDateTime->format("Y-m-d H:i:s"), $e->getMessage()));
+            }
+        }
+    }
 
     public function addNewPartition(\DateTime $partition_date)
     {
-        $this->logger->info(sprintf("attempting to add new partition for date %s", $partition_date->format("Y-m-d")));
+        $this->logger->info(sprintf("attempting to add new partition for date %s", $partition_date->format("Y-m-d H:i:s")));
         $partition_exists = $this->partitionExists($partition_date);
 
         if ($partition_exists) {
